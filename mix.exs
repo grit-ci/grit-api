@@ -15,7 +15,7 @@ defmodule Api.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger],
+    [applications: [:logger, :cowboy],
      mod: {Api, []}]
   end
 
@@ -29,6 +29,9 @@ defmodule Api.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:excoveralls, "~> 0.4", only: :test}]
+    [
+      {:cowboy, "~> 1.0.3"},
+      {:excoveralls, "~> 0.4", only: :test}
+    ]
   end
 end
