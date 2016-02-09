@@ -7,7 +7,8 @@ defmodule Api.Mixfile do
      elixir: "~> 1.2",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     test_coverage: [tool: ExCoveralls]]
   end
 
   # Configuration for the OTP application
@@ -28,6 +29,6 @@ defmodule Api.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [{:excoveralls, "~> 0.4", only: :test}]
   end
 end
