@@ -1,6 +1,6 @@
-defmodule ApiTest do
+defmodule GritTest do
   use ExUnit.Case
-  doctest Api
+  doctest Grit
 
   test "the truth" do
     assert 1 + 1 == 2
