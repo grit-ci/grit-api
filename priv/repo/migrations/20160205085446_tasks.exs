@@ -16,13 +16,9 @@ defmodule Grit.Repo.Migrations.Tasks do
       add :start, :datetime
       add :end, :datetime
       add :status, :task_status
+      add :attempts, :integer
       add :state, :jsonb
-      timestamps
-    end
-
-    create table(:task_dependencies, primary_key: false) do
-      add :task, references(:task, type: :uuid), primary_key: true
-      add :dependency, references(:task, type: :uuid), primary_key: true
+      add :path, {:array, :uuid}
       timestamps
     end
   end

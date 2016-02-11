@@ -3,30 +3,17 @@ defmodule Grit.Repo do
   otp_app: :grit
 end
 
-defmodule Grit.TaskDependencies do
-  use Ecto.Schema
-
-  @required_fields ~w(task dependency)
-  @primary_key false
-  schema "task_dependencies" do
-    belongs_to :task, Grit.Task, type: :binary_id, primary_key: true
-    belongs_to :dependency, Grit.Task, type: :binary_id, primary_key: true
-    timestamps
-  end
-end
-
 defmodule Grit.Task do
   use Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @required_fields ~w(type status)
   schema "task" do
-    many_to_many :dependencies, Grit.Task, join_through: "task_dependencies"
-    field :start, Ecto.Date
-    field :end, Ecto.Date
-    field :expires, Ecto.Date
-    field :reason, :string
-    field :attempts, :integer
+    field :start, Ecto.DateTime
+    field :end, Ecto.DateTime
+    field :path, {:array, :binary_id}
+    field :expires, Ecto.DateTime
+    field :attempts, :integer, default: 0
     field :type, :string
     field :status, :string, default: "pending"
     field :state, :map
@@ -42,7 +29,7 @@ defmodule Grit.Query do
     Grit.Task
       |> update(set: [status: "pending"])
       |> update(set: [reason: "restart"])
-      |> where([task], task.id == ^id)
+      |> where([task], fragment("path && ARRAY[?]", [task.id]))
   end
 
   # set this task and all child tasks to state = cancelled
@@ -85,9 +72,8 @@ defmodule Grit.Query do
       |> update(set: [status: "processing"])
       |> update(inc: [attempts: 1])
       |> update(set: [start: ^Ecto.DateTime.utc])
-      |> where([tasks], fragment("(SELECT COUNT(d.*) FROM task_dependencies AS d LEFT JOIN task AS t ON d.dependency = t.id WHERE t.status != 'completed' AND d.task = ?)", tasks.id) == 0)
+      |> where([tasks], fragment("(SELECT COUNT(*) FROM task AS t WHERE t.status != 'completed' AND t.id = ANY (?) AND t.id != ?)", tasks.path, tasks.id) == 0)
       |> where([task], task.status == "pending")
-      |> limit(^amount)
   end
 
   # Add a new task to the queue.
