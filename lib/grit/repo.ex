@@ -42,14 +42,14 @@ defmodule Grit.Query do
     Grit.Task
       |> update(set: [status: "pending"])
       |> update(set: [reason: "restart"])
-      |> where([task], task.id == id)
+      |> where([task], task.id == ^id)
   end
 
   # set this task and all child tasks to state = cancelled
   def cancel(id) do
     Grit.Task
       |> update(set: [status: "completed"])
-      |> where([task], task.id == id)
+      |> where([task], task.id == ^id)
   end
 
   def timeout(id) do
@@ -57,7 +57,7 @@ defmodule Grit.Query do
       |> update(set: [status: "error"])
       |> update(set: [reason: "timeout"])
       |> update(set: [ended: Ecto.DateTime.utc])
-      |> where([task], task.id == id)
+      |> where([task], task.id == ^id)
   end
 
   # set this task to state complete
@@ -65,7 +65,7 @@ defmodule Grit.Query do
     Grit.Task
       |> update(set: [status: "completed"])
       |> update(set: [ended: Ecto.DateTime.utc])
-      |> where([task], task.id == id)
+      |> where([task], task.id == ^id)
   end
 
   # postgres notify/listen for task events
@@ -86,7 +86,7 @@ defmodule Grit.Query do
       |> update(inc: [attempts: 1])
       |> where([tasks], fragment("(SELECT COUNT(d.*) FROM task_dependencies AS d LEFT JOIN task AS t ON d.dependency = t.id WHERE t.status != 'completed' AND d.task = ?)", tasks.id) == 0)
       |> where([task], task.status == "pending")
-      |> limit(amount)
+      |> limit(^amount)
   end
 
   # Add a new task to the queue.
