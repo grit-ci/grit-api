@@ -56,7 +56,7 @@ defmodule Grit.Query do
     Grit.Task
       |> update(set: [status: "error"])
       |> update(set: [reason: "timeout"])
-      |> update(set: [ended: Ecto.DateTime.utc])
+      |> update(set: [ended: ^Ecto.DateTime.utc])
       |> where([task], task.id == ^id)
   end
 
@@ -64,7 +64,7 @@ defmodule Grit.Query do
   def complete(id) do
     Grit.Task
       |> update(set: [status: "completed"])
-      |> update(set: [ended: Ecto.DateTime.utc])
+      |> update(set: [ended: ^Ecto.DateTime.utc])
       |> where([task], task.id == ^id)
   end
 
