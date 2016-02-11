@@ -12,4 +12,4 @@ config :grit, Grit.Repo,
   hostname: host,
   port: port || 5432,
   username: username,
-  password: password
+  password: password || ""

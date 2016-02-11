@@ -16,6 +16,7 @@ defmodule Grit.Repo.Migrations.Tasks do
       add :start, :datetime
       add :end, :datetime
       add :status, :task_status
+      add :type, :varchar
       add :attempts, :integer
       add :state, :jsonb
       add :path, {:array, :uuid}
