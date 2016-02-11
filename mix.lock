@@ -2,7 +2,7 @@
   "connection": {:hex, :connection, "1.0.2"},
   "db_connection": {:hex, :db_connection, "0.2.3"},
   "decimal": {:hex, :decimal, "1.1.1"},
-  "ecto": {:git, "git@github.com:elixir-lang/ecto.git", "617068d7977f493a2bd31f0645d0ad883b3c18fa", []},
+  "ecto": {:git, "https://github.com/elixir-lang/ecto.git", "617068d7977f493a2bd31f0645d0ad883b3c18fa", []},
   "excoveralls": {:hex, :excoveralls, "0.4.6"},
   "exjsx": {:hex, :exjsx, "3.2.0"},
   "hackney": {:hex, :hackney, "1.4.8"},

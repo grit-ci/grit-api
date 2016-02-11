@@ -22,8 +22,8 @@ defmodule Grit.Task do
   @required_fields ~w(type status)
   schema "task" do
     many_to_many :dependencies, Grit.Task, join_through: "task_dependencies"
-    field :started, Ecto.Date
-    field :ended, Ecto.Date
+    field :start, Ecto.Date
+    field :end, Ecto.Date
     field :expires, Ecto.Date
     field :reason, :string
     field :attempts, :integer
@@ -56,7 +56,7 @@ defmodule Grit.Query do
     Grit.Task
       |> update(set: [status: "error"])
       |> update(set: [reason: "timeout"])
-      |> update(set: [ended: ^Ecto.DateTime.utc])
+      |> update(set: [end: ^Ecto.DateTime.utc])
       |> where([task], task.id == ^id)
   end
 
@@ -64,7 +64,7 @@ defmodule Grit.Query do
   def complete(id) do
     Grit.Task
       |> update(set: [status: "completed"])
-      |> update(set: [ended: ^Ecto.DateTime.utc])
+      |> update(set: [end: ^Ecto.DateTime.utc])
       |> where([task], task.id == ^id)
   end
 
@@ -80,10 +80,11 @@ defmodule Grit.Query do
   # with the processing token can update the row, until the token expires at
   # which point the row will be updated with state "timeout". Said token will
   # be a JWT. Update the "expires" field to the same value found in the token.
-  def pop(amount // 1) do
+  def pop(amount) do
     Grit.Task
       |> update(set: [status: "processing"])
       |> update(inc: [attempts: 1])
+      |> update(set: [start: ^Ecto.DateTime.utc])
       |> where([tasks], fragment("(SELECT COUNT(d.*) FROM task_dependencies AS d LEFT JOIN task AS t ON d.dependency = t.id WHERE t.status != 'completed' AND d.task = ?)", tasks.id) == 0)
       |> where([task], task.status == "pending")
       |> limit(^amount)
