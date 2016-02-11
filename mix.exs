@@ -17,7 +17,7 @@ defmodule Grit.Mixfile do
   ] end
 
   defp deps do [
-    {:ecto, git: "git@github.com:elixir-lang/ecto.git"},
+    {:ecto, git: "https://github.com/elixir-lang/ecto.git"},
     {:postgrex, "~> 0.11.0"},
     {:excoveralls, "~> 0.4", only: :test}
   ] end
