@@ -5,12 +5,13 @@ otp_release:
   - 18.2.1
 before_script:
   - psql -c 'create database grit;' -U postgres
-  - MIX_ENV=test mix ecto.migrate
+  - mix ecto.migrate
 after_script:
-  - MIX_ENV=test mix coveralls.travis
+  - mix coveralls.travis
 addons:
   postgresql: "9.4"
 services:
   - postgresql
 env:
   - DATABASE_URL=postgres://postgres@localhost/grit
+  - MIX_ENV=test
